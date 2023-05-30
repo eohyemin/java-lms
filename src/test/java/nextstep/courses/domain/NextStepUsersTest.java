@@ -49,4 +49,16 @@ public class NextStepUsersTest {
                 .isThrownBy(() -> nextStepUsers.cancel(sessionUser))
                 .withMessageMatching("수강 신청이 승인된 사용자입니다.");
     }
+
+    @Test
+    @DisplayName("이미 수강신청한 사용자의 경우 신청할 수 없다")
+    void validate_duplicate() {
+        NextStepUsers nextStepUsers = new NextStepUsers(10);
+        SessionUser sessionUser = new SessionUser(NsUserTest.JAVAJIGI);
+        nextStepUsers.enroll(sessionUser);
+
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> nextStepUsers.enroll(sessionUser))
+                .withMessageMatching(NextStepUsers.ALREADY_ENROLLED_USER);
+    }
 }
